@@ -14,7 +14,7 @@ class _DevicePairingPageState extends State<DevicePairingPage> {
   bool _foundDeviceWaitingToConnect = false;
   bool _scanStarted = false;
   bool _connected = false;
-  late DiscoveredDevice _ubiqueDevice;
+  late DiscoveredDevice _nftDevice;
   final flutterReactiveBle = FlutterReactiveBle();
   late StreamSubscription<DiscoveredDevice> _scanStream;
   late QualifiedCharacteristic _rxCharacteristic;
@@ -31,7 +31,7 @@ class _DevicePairingPageState extends State<DevicePairingPage> {
       _scanStream = flutterReactiveBle
           .scanForDevices(withServices: [serviceUuid]).listen((device) {
         setState(() {
-          _ubiqueDevice = device;
+          _nftDevice = device;
           _foundDeviceWaitingToConnect = true;
         });
       });
@@ -42,7 +42,7 @@ class _DevicePairingPageState extends State<DevicePairingPage> {
     _scanStream.cancel();
     Stream<ConnectionStateUpdate> _currentConnectionStream = flutterReactiveBle
         .connectToAdvertisingDevice(
-            id: _ubiqueDevice.id,
+            id: _nftDevice.id,
             prescanDuration: const Duration(seconds: 1),
             withServices: [serviceUuid, characteristicUuid]);
     _currentConnectionStream.listen((event) {
@@ -104,9 +104,9 @@ class _DevicePairingPageState extends State<DevicePairingPage> {
           child: Column(
             children: [
               const Text("Device Found"),
-              Text(_ubiqueDevice.name.toString()),
-              Text(_ubiqueDevice.id.toString()),
-              Text(_ubiqueDevice.manufacturerData.toString()),
+              Text(_nftDevice.name.toString()),
+              Text(_nftDevice.id.toString()),
+              Text(_nftDevice.manufacturerData.toString()),
               ElevatedButton(
                 child: const Text("Connect to Device"),
                 onPressed: _connectToDevice,
