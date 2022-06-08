@@ -44,6 +44,8 @@ dependencies:
   salomon_bottom_bar: ^3.3.1
   http: ^0.13.4
   flutter_reactive_ble: ^5.0.2
+  hex: ^0.2.0
+  location: ^4.2.0
 
 
 dev_dependencies:
