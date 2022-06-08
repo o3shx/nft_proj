@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:nft_proj/app/loading_screen.dart';
 import 'package:nft_proj/constants.dart';
 import 'package:nft_proj/screens/device_pairing/device_pairing.dart';
@@ -21,6 +22,7 @@ class WidgetTree extends StatefulWidget {
 }
 
 class _WidgetTreeState extends State<WidgetTree> {
+  Location location = Location();
   int _currentIndex = 0;
   late PageController _pageController;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -35,6 +37,28 @@ class _WidgetTreeState extends State<WidgetTree> {
     super.initState();
     _pageController = PageController();
     setListners();
+    getPermissions();
+  }
+
+  getPermissions() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
   }
 
   @override
